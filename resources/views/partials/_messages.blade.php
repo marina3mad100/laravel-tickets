@@ -1,7 +1,9 @@
 @if (Session::has('success'))
 	
 	<div class="alert alert-success" role="alert">
-		<strong>Success:</strong> {{ Session::get('success') }}
+	<?php
+		echo Lang::get('messages.'.Session::get('success'));
+	?>
 	</div>
 
 @endif

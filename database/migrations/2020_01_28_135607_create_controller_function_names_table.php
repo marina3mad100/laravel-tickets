@@ -16,6 +16,7 @@ class CreateControllerFunctionNamesTable extends Migration
         Schema::create('controller_function_names', function (Blueprint $table) {
             $table->bigIncrements('id');
 			$table->string('name')->unique();
+			$table->string('name_ar')->unique();
 			$table->integer('controller_name_id');
 			$table->integer('parent_function_id')->default(0);
             $table->timestamps();

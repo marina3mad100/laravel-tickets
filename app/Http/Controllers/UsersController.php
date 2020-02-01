@@ -60,13 +60,33 @@ class UsersController extends Controller
             'password' => Hash::make($request->password),
 			
         ]);
-		$user->admin = 1;
-		$user->save();
+
 		$user_row = User::find($user->id);
 		$roles = $request->role ;
 		if(!empty($request->role)){
 
 			$user_row->syncRoles($roles);
+
+		}
+		$super_admin = 0;		
+		if(!empty($user->roles)){
+			
+			foreach($user->roles as $rolename){
+				if($rolename->name == 'Super Admin'){
+					$user->super_admin = 1;
+					$user->admin = 0;
+					$super_admin = 1;
+					$user->save();
+					break;
+				}
+					
+			}
+			if($super_admin == 0){
+				$user->admin = 1;
+				$user->super_admin = 0;				
+				$user->save();				
+			}
+			
 		}
 		
 		if(!empty($request->permission)){
@@ -75,8 +95,8 @@ class UsersController extends Controller
 		}
 		Session::flash('success', 'New Admin has been created');
 
-        // return redirect()->back()->withInput();
-		return redirect()->route('admins.index',$locale);
+        return redirect()->back()->withInput();
+		//return redirect()->route('admins.index',$locale);
     }
 
 
@@ -146,6 +166,28 @@ class UsersController extends Controller
 		if(!empty($request->role)){
 			$user->syncRoles($roles);
 		}
+		$super_admin = 0;		
+		if(!empty($user->roles)){
+			
+			foreach($user->roles as $rolename){
+				if($rolename->name == 'Super Admin'){
+					$user->super_admin = 1;
+					$user->admin = 0;
+					$super_admin = 1;
+					$user->save();
+					break;
+				}
+					
+			}
+			// dd($super_admin);
+			if($super_admin == 0){
+				$user->admin = 1;
+				$user->super_admin = 0;				
+				$user->save();				
+			}
+			
+		}		
+		
 		
 		if(!empty($request->permission)){
 			$user->syncPermissions($request->permission);

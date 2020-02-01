@@ -70,6 +70,26 @@ return [
 	'FunctionName'=>'أسم المهمة',
 	'TicketsAddedByMe'=>'تيكيت أضيفت بواسطتي',
 	'Errors'=>'أخطاء',
-	'OwnedTicket'=>'التيكيت الخاصة بي'
+	'OwnedTicket'=>'التيكيت الخاصة بي',
+	'Errors'=>'أخطاء',
+	'OwnedTicket'=>'التيكيت الخاصة بي',
+	'New Role has been created'=>'تم أضافة دور جديد بنجاح',
+	'Role Has Been Updated'=>'تم التعديل بنجاح',
+	'Role Has Been Deleted'=>'تم الحذف بنجاح',
+	'New Permission has been created'=>'تم أضافة صلاحية جديدة بنجاح',
+	'Permission Has Been Updated'=>'تم التعديل بنجاح',
+	'Permission Has Been Deleted'=>'تم الحذف بنجاح',
+	'New Admin has been created'=>'تم أضافة أدمن جديدة بنجاح',
+	'Admin has been updated'=>'تم التعديل بنجاح',
+	'Admin Has Been Deleted'=>'تم الحذف بنجاح',
+	'New permission has been Added'=>'تم تخصيص أو حذف صلاحيات معينة بنجاح ',
+	'New Ticket has been created'=>'تم أضافة تيكيت جديد بنجاح',
+	'Ticket has been updated'=>'تم التعديل بنجاح',
+	'Ticket Has Been Opened'=>'تم فتح التيكيت بنجاح',
+	'Ticket Has Been Deleted'=>'تم الحذف بنجاح',
+	'Ticket Has Been Closed'=>'تم غلق التيكيت بنجاح',
+	'Ticket Has Been Reopened'=>'تم أعادة فتح التيكيت بنجاح',	
+	'searchResult'=>'نتائج البحث'
+	
 	
 ];
