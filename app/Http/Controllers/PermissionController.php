@@ -90,29 +90,7 @@ class PermissionController extends Controller
 		$permission->name = preg_replace('/[^A-Za-z0-9\-]/', ' ', $request->permission);
 		$permission->save();
 		
-		$permission->syncRoles($request->role);		
-		
-		// $perm_roles = array();
-		// if($permission->roles->count() > 0){
-			// foreach($permission->roles as $role){
-					// $perm_roles[]=$role->id;								
-			// }
-		// }
-		//////////////in update , get new roles that no added before and added new roles////////////////
-		// $new_roles = array();
-		// if(!empty($request->role)){
-			// foreach($request->role as $role){
-				
-				// if(!in_array($role,$perm_roles)){
-					// $new_roles[]=$role;
-				// }
-				
-			// }
-			
-		// }
-		// if(!empty($new_roles)){
-			// $permission->assignRole($new_roles);
-		// }		
+		$permission->syncRoles($request->role);				
 		Session::flash('success', 'Permission Has Been Updated');
 
         return redirect()->back()->withInput();	
