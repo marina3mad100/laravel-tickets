@@ -88,8 +88,7 @@ class PermissionController extends Controller
 			'permission' => 'required|unique:permissions,name,'.$id,
 		]);
 		$permission->name = preg_replace('/[^A-Za-z0-9\-]/', ' ', $request->permission);
-		$permission->save();
-		
+		$permission->save();	
 		$permission->syncRoles($request->role);				
 		Session::flash('success', 'Permission Has Been Updated');
 
