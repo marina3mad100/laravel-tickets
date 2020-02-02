@@ -28,12 +28,9 @@ class HomeController extends Controller
     }
 	public function changelangouage(Request $request){
 	
-		 App::setLocale($request['lang']);
-		// $lang = $request['lang'];
-		// $routeArray = app('request')->route()->getAction();
+		App::setLocale($request['lang']);
 		return app()->getLocale();
-		// return;
-		// return redirect()->back();		
+		
 
 	}
 }
