@@ -1,12 +1,5 @@
 @extends('layouts.app')
-
 @section('content')
-
-
-
-
-
-
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -20,7 +13,7 @@
                         <table id="example" class="table table-striped">
 							<thead>
 								<tr>
-									<th scope="col">@lang('messages.FunctionName')</th>
+									<th scope="col" style="width:70%;">@lang('messages.FunctionName')</th>
 									<th scope="col">@lang('messages.Permissions')</th>
 								
 								</tr>
@@ -34,7 +27,9 @@
 											@else
 												{{$function->name_ar}}
 											@endif
-										
+											<?php
+												echo '</br><small class="desc">'.Lang::get('messages.'.$function->name).'</small>';
+											?>										
 										</td>
 										<td>
 											<form action="{{route('functions.add_delete' , [app()->getLocale() , $function->id ])}}" method="POST"  >
@@ -48,29 +43,27 @@
 																@foreach($function->permissions as $fun_perm){
 																	@if($fun_perm->id == $permission->id)
 																		checked
-																	@endif	
-															
-																@endforeach
-																	
-															
+																	@endif																
+																@endforeach																																
 															@endif
 														>
 														<label class="form-check-label"  >
 																{{$permission->name}}
 															  </label><br>
 														@endforeach
+														<button type="submit" class="btn btn-danger">@lang('messages.save')</button>
+													@else
+														<h4>@lang('messages.NoPermissionPleaseAdd')</h4>
 													@endif
 													
 												</div>
-												<button type="submit" class="btn btn-danger">@lang('messages.save')</button>
 	
 											</form>
 										</td>
 									</tr>									
 								@endforeach								
 							</tbody>
-						</table> 
-											
+						</table> 											
 					@endif	
                 </div>
             </div>

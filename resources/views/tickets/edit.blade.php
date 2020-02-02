@@ -1,15 +1,11 @@
 @extends('layouts.app')
-
 @section('content')
-
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">@lang('messages.TicketEdit')</div>
-
                 <div class="card-body">
-
 					@include('partials._messages')
 					<form action="{{route('tickets.update' , [app()->getLocale() ,  $ticket->id ])}}" method="POST"  >
                         {{ csrf_field()}}
@@ -29,7 +25,6 @@
 							<label for="name">@lang('messages.TicketNo')</label>
 							<input type="text" class="form-control" name="ticket_no" value="@if ($errors->any()) {{old('ticket_no')}}  @else {{$ticket->ticket_no}}  @endif" placeholder="@lang('messages.Enter') @lang('messages.TicketNo')">
                         </div>
- 
                         <div class="form-group">
 							<label for="name">@lang('messages.fromdate') (@lang('messages.currentdate'))</label>
 							<input type="text" class="form-control" name="start_date" value="@if ($errors->any()) {{old('start_date')}} @else  {{$ticket->start_date}}  @endif" placeholder="@lang('messages.Enter') @lang('messages.fromdate')"readonly >
@@ -41,8 +36,7 @@
                        <div class="form-group">
 							<label for="name">@lang('messages.description')</label>
 							<textarea name="description" class="form-control">@if ($errors->any()) {{old('description')}} @else {{$ticket->description}}  @endif</textarea>
-                        </div>	 
-                         
+                        </div>	                         
 	                    <div class="form-group">
 							<label for="name">@lang('messages.assignedadmin')</label>
 							<select class="form-control" name="user_assigned_id">
@@ -54,19 +48,9 @@
 								@endif
 								
 							</select>
-                        </div>					 
-						 
-						 
+                        </div>					 						 						 
                         <button type="submit" class="btn btn-primary">@lang('messages.save')</button>
-                      </form>      
-                    
-
-
-
-
-
-
-
+                    </form>      
                 </div>
             </div>
         </div>

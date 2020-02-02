@@ -52,14 +52,19 @@ class User extends Authenticatable
         return $this->hasOne('App\Ticket','user_assigned_id','id');
     }
 	
-	
+	//////// check if auth user has permission to access this route name or function ////////////
 	public function get_permission_for_this_page_link($route_name){
 		if(!Auth::user()->super_admin == 1){
+			/////// if auth user not super admin  , get controller name and action name for route name params /////////////////////////////////////			
+			//////// to check if auth user has permission to access this route///////////////////////////////////////					
 			$controller_and_function_by_rote = class_basename(Route::getRoutes()->getByName($route_name)->getActionName());
 			list($controller, $action) = explode('@', $controller_and_function_by_rote);
+			/////// get controller id and  controller action id /////////////////////////////////////			
 			$controller_name_id = ControllerName::where('name', $controller)->first();
-			$controller_function = ControllerFunctionName::where(['func_name'=>$action , 'controller_name_id'=>$controller_name_id ->id])->first();
-					
+			if(isset($controller_name_id) && !empty($controller_name_id)){
+				$controller_function = ControllerFunctionName::where(['func_name'=>$action , 'controller_name_id'=>$controller_name_id ->id])->first();
+			}					
+			//////// get all permissions that assigned to this action or function ///////////////////////////			
 			if(isset($controller_function) && !empty($controller_function)){
 				$function_permissions = $controller_function->permissions;
 				$arr_function_permission=array();
@@ -70,6 +75,7 @@ class User extends Authenticatable
 					}
 				}
 			}
+			/////// get auth user permissions and check if auth user has permission to access this route or action////////////
 			$arr_user_permission = $this->get_permission();
 			if(!empty($arr_function_permission)){
 				foreach($arr_function_permission as $func_permission_id){
@@ -106,39 +112,5 @@ class User extends Authenticatable
 		return false;
 	}
 
-	// public function get_this_function_permission(){
-		// $routeArray = app('request')->route()->getAction();
-        // $controllerAction = class_basename($routeArray['controller']);
-        // list($controller, $action) = explode('@', $controllerAction);
-		// $controller_name_id = ControllerName::where('name', $controller)->first();
-		// $controller_function = ControllerFunctionName::where(['func_name'=>$action , 'controller_name_id'=>$controller_name_id ->id])->first();
-				
-		// if(isset($controller_function) && !empty($controller_function)){
-			// $function_permissions = $controller_function->permissions;
-			// $arr_function_permission=array();
-			// if(isset($function_permissions) && !empty($function_permissions)){
-				// foreach($function_permissions as $fun_permission){
-					
-					// $arr_function_permission[]=$fun_permission->id;
-				// }
-			// }
-		// }
-		
-		// return $arr_function_permission;
-			
-	// }
-	
-	// public  function check_this_user_has_permission_for_this_function(){
-		// $arr_function_permission = $this->get_this_function_permission();
-		// $arr_user_permission = $this->get_permission();
-		// if(!empty($arr_function_permission)){
-			// foreach($arr_function_permission as $func_permission_id){
-				// if(in_array($func_permission_id , $arr_user_permission)){
-					// return true;
-				// }
-			// }
-		// }	
-		// return false;
-		
-	// }
+
 }

@@ -17,55 +17,8 @@ class TicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-	public function send_email($name , $email , $body)
-	{
-		$to_name = $name;
-		$to_email = $email;
-		$data = array('name'=>"Dear ".$name, "body" => $body);
-    
-		Mail::send('emails.test', $data, function($message) use ($to_name, $to_email) {
-			$message->to($to_email, $to_name)
-            ->subject('Ticket System');
-            $message->from('tecsee@gmail.com', 'Tecsee');
-		});
-	}
-
 	 
-	public function dashboard($locale,$id){
-		$assigned_tickets = Ticket::where('user_assigned_id', Auth::user()->id)->get();
-		$owned_tickets = Ticket::where('user_id', Auth::user()->id)->get();
-		$added_tickets_by_me = Ticket::where('added_by', Auth::user()->id)->where('user_id','!=',Auth::user()->id)->get();
-
-		$admins = User::where(function ($query) {
-               $query->where('super_admin', '=', 1)
-                     ->orWhere('admin', '=', 1);
-           })
-           ->get();	
-
-		$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->get();		
-		return view('tickets.dashboard')->with('admins',$admins)->with('users',$users)->with('added_tickets_by_me',$added_tickets_by_me)
-			->with('assigned_tickets',$assigned_tickets)->with('owned_tickets',$owned_tickets);
-	}		
-	public function search($locale,Request $request){
-		$tickets = Ticket::where('id','>',0)->where(function($qry) use ($request){
-
-			if($request->user_id != ''){
-				$qry->orwhere('user_id',$request->user_id);
-			}
-			if($request->start_date != ''){
-				$qry->orwhere('start_date',$request->start_date);
-			}
-			if($request->end_date != ''){
-				$qry->orwhere('end_date',$request->end_date);
-			}
-			if($request->user_assigned_id != ''){
-				$qry->orwhere('user_assigned_id',$request->user_assigned_id);
-			}
-		})->get();
-			
-        return view('tickets.search')->with('tickets',$tickets);
-	}
-    public function index()
+	public function index()
     {
         return view('tickets.index')->with('tickets',Ticket::all());
     }
@@ -84,13 +37,13 @@ class TicketController extends Controller
            ->get();	
 		if(Auth::user()->is_owner()){
 			$users = User::where(['id'=>Auth::user()->id])->get();
-		}else{
-			$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->orWhere(['super_admin'=>1])->get();
+		}else if (Auth::user()->admin == 1){
+			$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->get();
 		}
-		// }else{
-			// $users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->get();
+		else{
+			$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->orWhere(['super_admin'=>1])->get();
 
-		// }		
+		}		
         return view('tickets.create')->with('users',$users)->with('admins',$admins);
 		
 		
@@ -110,12 +63,7 @@ class TicketController extends Controller
 			'start_date' => 'required|date_format:Y-m-d',
 			'end_date' => 'required|date_format:Y-m-d|after:start_date',
 			'user_assigned_id'=>'different:user_id'
-        ]
-		// [
-		// 'user_assigned_id.different'=>'User Assigned and Owner must be Different'
-		// ]
-		);
-		
+        ]);		
 		$ticket = Ticket::create($request->all());
 		$ticket->added_by = Auth::user()->id;
 		$ticket->save();
@@ -157,8 +105,12 @@ class TicketController extends Controller
            ->get();		
 		if(Auth::user()->is_owner()){
 			$users = User::where(['id'=>Auth::user()->id])->get();
-		}else{
+		}else if (Auth::user()->admin == 1){
+			$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->get();
+		}
+		else{
 			$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->orWhere(['super_admin'=>1])->get();
+
 		}			
         return view('tickets.edit')->with('ticket',Ticket::find($id))->with('users',$users)->with('admins',$admins);;
 
@@ -179,11 +131,7 @@ class TicketController extends Controller
 			'start_date' => 'required|date_format:Y-m-d',
 			'end_date' => 'required|date_format:Y-m-d|after:start_date',
 			'user_assigned_id'=>'different:user_id'
-        ]
-		// [
-		// 'user_assigned_id.different'=>'User Assigned and Owner must be Different'
-		// ]
-		);
+        ]);
 		$ticket = Ticket::find($id);
 		$ticket->user_id=$request->user_id;
         $ticket->ticket_no=$request->ticket_no;
@@ -205,6 +153,7 @@ class TicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+	 ///////////Destroy ticket///////////////////////
     public function destroy($locale,$id)
     {
         $ticket = Ticket::find($id);
@@ -212,7 +161,7 @@ class TicketController extends Controller
 		Session::flash('success', 'Ticket Has Been Deleted');
 		return redirect()->back();		
     }
-	
+	/////////Open Ticket/////////////////
     public function open($locale,$id)
     {
         $ticket = Ticket::find($id);
@@ -225,7 +174,7 @@ class TicketController extends Controller
 		Session::flash('success', 'Ticket Has Been Opened');
 		return redirect()->back();		
     }
-
+	//////////Close Ticket///////////////
     public function close($locale,$id)
     {
         $ticket = Ticket::find($id);
@@ -237,16 +186,13 @@ class TicketController extends Controller
 		Session::flash('success', 'Ticket Has Been Closed');
 		return redirect()->back();		
     }	
+	//////Reopen Ticket //////////////
     public function reopen($locale,Request $request,$id)
     {
         $this->validate($request,[
 			'today_date' => 'required|date',
 			'reopen_end_date' => 'required|date_format:Y-m-d|after:today_date',
-        ]
-		// [
-		// 'reopen_end_date.after'=>'End Date Must be larger than '.$request->end_date_old
-		// ]
-		);
+        ]);
 		$ticket = Ticket::find($id);
 		$ticket->end_date = $request->reopen_end_date;		
         $ticket->status = 2;
@@ -259,23 +205,61 @@ class TicketController extends Controller
 
         return redirect()->back()->withInput();				
     }
-
-    public function mytickets($locale,$id)
+/////////My Own ticket///////////////////
+    public function mytickets($id)
     {
 		$tickets = Ticket::where('user_id', Auth::user()->id)->get();		
         return view('tickets.mytickets')->with('tickets',$tickets);
 
     }
+	public function send_email($name , $email , $body)
+	{
+		$to_name = $name;
+		$to_email = $email;
+		$data = array('name'=>"Dear ".$name, "body" => $body);
+    
+		Mail::send('emails.test', $data, function($message) use ($to_name, $to_email) {
+			$message->to($to_email, $to_name)
+            ->subject('Ticket System');
+            $message->from('tecsee@gmail.com', 'Tecsee');
+		});
+	}
+	public function dashboard($locale,$id){
+		$assigned_tickets = Ticket::where('user_assigned_id', Auth::user()->id)->get();
+		$owned_tickets = Ticket::where('user_id', Auth::user()->id)->get();
+		$added_tickets_by_me = Ticket::where('added_by', Auth::user()->id)->where('user_id','!=',Auth::user()->id)->get();
+		$admins = User::where(function ($query) {
+               $query->where('super_admin', '=', 1)
+                     ->orWhere('admin', '=', 1);
+           })
+           ->get();	
 
-    public function assignedtickets($locale,$id)
-    {
-		$tickets = Ticket::where('user_assigned_id', Auth::user()->id)->get();		
-        return view('tickets.assignedtickets')->with('tickets',$tickets);
+		$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->orwhere(['super_admin'=>1])->get();		
+		return view('tickets.dashboard')->with('admins',$admins)->with('users',$users)->with('added_tickets_by_me',$added_tickets_by_me)
+			->with('assigned_tickets',$assigned_tickets)->with('owned_tickets',$owned_tickets);
+	}		
+	public function search($locale,Request $request){
+		$tickets = Ticket::where('id','>',0)->where(function($qry) use ($request){
 
-    }	
+			if($request->user_id != ''){
+				$qry->orwhere('user_id',$request->user_id);
+			}
+			if($request->start_date != ''){
+				$qry->orwhere('start_date',$request->start_date);
+			}
+			if($request->end_date != ''){
+				$qry->orwhere('end_date',$request->end_date);
+			}
+			if($request->user_assigned_id != ''){
+				$qry->orwhere('user_assigned_id',$request->user_assigned_id);
+			}
+		})->get();
+			
+        return view('tickets.search')->with('tickets',$tickets);
+	}
+   	
 	
-	
-	///////////////////////////OWNER//////////////////////
+	///////////////////////////OWNER//////////////////////////////////////////////////////////////////////////////
 	 public function addticket()
     {
 		
@@ -287,8 +271,12 @@ class TicketController extends Controller
            ->get();	
 		if(Auth::user()->is_owner()){
 			$users = User::where(['id'=>Auth::user()->id])->get();
-		}else{
+		}else if (Auth::user()->admin == 1){
 			$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->get();
+		}
+		else{
+			$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->orWhere(['super_admin'=>1])->get();
+
 		}			
         return view('tickets.addticket')->with('users',$users)->with('admins',$admins);
 		
@@ -333,9 +321,13 @@ class TicketController extends Controller
            ->get();		
 		if(Auth::user()->is_owner()){
 			$users = User::where(['id'=>Auth::user()->id])->get();
-		}else{
+		}else if (Auth::user()->admin == 1){
 			$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->get();
-		}			
+		}
+		else{
+			$users = User::where(['super_admin'=>0 , 'admin'=>0])->orWhere(['admin'=>1])->orWhere(['super_admin'=>1])->get();
+
+		}		
         return view('tickets.change')->with('ticket',Ticket::find($id))->with('users',$users)->with('admins',$admins);
 
     }
@@ -369,12 +361,14 @@ class TicketController extends Controller
 
         return redirect()->back()->withInput();		
     }
+	/////My Own Ticket/////////////////////////
     public function ownertickets($locale,$id)
     {
 		$tickets = Ticket::where('user_id', Auth::user()->id)->get();		
         return view('tickets.ownertickets')->with('tickets',$tickets);
 
     }	
+	///////////////Destroy Ticket//////////////////////////////
     public function destroyownerticket($locale,$id)
     {
         $ticket = Ticket::find($id);

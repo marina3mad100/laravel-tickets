@@ -26,7 +26,14 @@ class UsersController extends Controller
 	
     public function index()
     {
-        return view('users.index')->with('admins',User::where('id','!=',Auth::user()->id)->where('admin',1)->get());
+		
+		$admins = User::where('id', '!=', Auth::user()->id)
+           ->where(function ($query) {
+               $query->where('super_admin', '=', 1)
+                     ->orWhere('admin', '=', 1);
+           })
+           ->get();			
+        return view('users.index')->with('admins',$admins);
     }
 
     /**
@@ -163,12 +170,10 @@ class UsersController extends Controller
 		$user->password =Hash::make($request->password);
 		$user->save();		
 		$roles = $request->role ;
-		if(!empty($request->role)){
-			$user->syncRoles($roles);
-		}
+		$user->syncRoles($roles);
+		
 		$super_admin = 0;		
-		if(!empty($user->roles)){
-			
+		if(!empty($user->roles)){			
 			foreach($user->roles as $rolename){
 				if($rolename->name == 'Super Admin'){
 					$user->super_admin = 1;
@@ -179,22 +184,15 @@ class UsersController extends Controller
 				}
 					
 			}
-			// dd($super_admin);
 			if($super_admin == 0){
 				$user->admin = 1;
 				$user->super_admin = 0;				
 				$user->save();				
 			}
 			
-		}		
-		
-		
-		if(!empty($request->permission)){
-			$user->syncPermissions($request->permission);
-			
-		}
-		Session::flash('success', ' Admin has been updated');
-
+		}						
+		$user->syncPermissions($request->permission);			
+		Session::flash('success', 'Admin has been updated');
         return redirect()->back()->withInput();
 		
     }

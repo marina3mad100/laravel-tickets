@@ -68,7 +68,7 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
-                        <a href="{{ url('/home',app()->getLocale()) }}">Home</a>
+                        <a href="{{ route('home',app()->getLocale()) }}">Home</a>
                     @else
                         <a href="{{ route('login',app()->getLocale()) }}">Login</a>
 

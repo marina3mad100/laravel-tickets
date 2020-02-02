@@ -1,24 +1,12 @@
 @extends('layouts.app')
-
 @section('content')
-
-
-
-
-
-
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">@lang('messages.TicketCreate')</div>
-
                 <div class="card-body">
-
 					@include('partials._messages')
-
-                    
-
                     <form action="{{route('tickets.store' , app()->getLocale())}}" method="POST"  >
                         {{ csrf_field()}}
 						<div class="form-group">
@@ -45,7 +33,7 @@
 							<label for="name">@lang('messages.todate')</label>
 							<input type="text" class="form-control date" name="end_date" value="@if ($errors->any()) {{old('end_date')}} @else {{date('Y-m-d')}}  @endif" placeholder="@lang('messages.Enter') @lang('messages.todate')" readonly >
                         </div>						
-                       <div class="form-group">
+						<div class="form-group">
 							<label for="name">@lang('messages.description')</label>
 							<textarea name="description" class="form-control">@if ($errors->any()) {{old('description')}} @elseif (Session::has('success')) {{''}}  @endif</textarea>
                         </div>						
@@ -57,21 +45,11 @@
 									@foreach($admins as $user)
 										<option value="{{$user->id}}" @if ($errors->any() && old('user_assigned_id') == $user->id ) {{'selected'}} @elseif (Session::has('success')) {{''}}  @endif >{{$user->name}}</option>									
 									@endforeach
-								@endif
-								
+								@endif								
 							</select>
-                        </div>
-    
+                        </div>  
                         <button type="submit" class="btn btn-primary">@lang('messages.save')</button>
-                      </form>      
-                    
-
-
-
-
-
-
-
+                      </form>                         
                 </div>
             </div>
         </div>

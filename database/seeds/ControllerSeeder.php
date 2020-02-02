@@ -11,13 +11,6 @@ class ControllerSeeder extends Seeder
      */
     public function run()
     {
-        \App\ControllerName::create([
-			'name'=> 'RoleController'
-		   ]);
-		\App\ControllerName::create(   
-		   [
-			'name'=> 'PermissionController'
-		   ]);
 		\App\ControllerName::create(   
 		   [
 			'name'=> 'UsersController'
@@ -27,10 +20,6 @@ class ControllerSeeder extends Seeder
 			'name'=> 'TicketController'
 		   ]
 	   );
-		\App\ControllerName::create(   
-		   [
-			'name'=> 'FunctionSiteController'
-		   ]
-	   );	   
+	   
     }
 }

@@ -43,8 +43,6 @@ class RoleController extends Controller
         $role = Role::create(['name' => preg_replace('/[^A-Za-z0-9\-]/', ' ', $request->role)]);
 		Session::flash('success', 'New Role has been created');
 		return redirect()->route('roles.index',$locale);
-
-        // return redirect()->back()->withInput();
     }
 
 
@@ -99,7 +97,6 @@ class RoleController extends Controller
      */
     public function destroy($locale ,$id)
     {
-        //
         $role = Role::find($id);
 		$permissions = $role->permissions;	
 		$role->revokePermissionTo($permissions);

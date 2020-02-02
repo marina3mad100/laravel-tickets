@@ -37,10 +37,6 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
 					@if (Auth::user())
-
-
-
-
 					@if(Auth::user()->get_permission_for_this_page_link('roles.index') || Auth::user()->get_permission_for_this_page_link('roles.create') || Auth::user()->get_permission_for_this_page_link('roles.edit') || Auth::user()->get_permission_for_this_page_link('roles.destroy') ||  Auth::user()->super_admin == 1)  
 						<ul class="navbar-nav mr-auto">
 							<li class="nav-item dropdown">
@@ -56,8 +52,7 @@
 									@endif
 						
 								</div>
-							</li>
-						
+							</li>						
 						</ul>
 					@endif	
 					@if(Auth::user()->get_permission_for_this_page_link('permissions.index') || Auth::user()->get_permission_for_this_page_link('permissions.create') || Auth::user()->get_permission_for_this_page_link('permissions.edit') || Auth::user()->get_permission_for_this_page_link('permissions.destroy') || Auth::user()->super_admin == 1)  
@@ -72,11 +67,9 @@
 									@endif
 									@if(Auth::user()->get_permission_for_this_page_link('permissions.index') || Auth::user()->get_permission_for_this_page_link('permissions.edit') || Auth::user()->get_permission_for_this_page_link('permissions.destroy') || Auth::user()->get_permission_for_this_page_link('permissions.create') || Auth::user()->super_admin == 1)
 										<a class="dropdown-item" href="{{route('permissions.index',app()->getLocale())}}">@lang('messages.AllPermissions')</a>																	
-									@endif
-					
+									@endif					
 							  </div>
-							</li>
-							
+							</li>							
 						  </ul>
 					@endif
 					@if(Auth::user()->get_permission_for_this_page_link('admins.index') || Auth::user()->get_permission_for_this_page_link('admins.create') || Auth::user()->get_permission_for_this_page_link('admins.edit') || Auth::user()->get_permission_for_this_page_link('admins.destroy') ||  Auth::user()->super_admin == 1)  
@@ -91,12 +84,9 @@
 									@endif
 									@if(Auth::user()->get_permission_for_this_page_link('admins.index') || Auth::user()->get_permission_for_this_page_link('admins.edit') || Auth::user()->get_permission_for_this_page_link('admins.destroy') || Auth::user()->super_admin == 1)
 										<a class="dropdown-item" href="{{route('admins.index',app()->getLocale())}}">@lang('messages.AllAdmins')</a>																	
-									@endif
-					
+									@endif					
 							  </div>									
-
-							</li>
-						
+							</li>						
 						</ul>	
 					@endif 
 					@if(Auth::user()->get_permission_for_this_page_link('functions.show')  || Auth::user()->super_admin == 1)  						
@@ -110,8 +100,7 @@
 										<a class="dropdown-item" href="{{route('functions.show' ,app()->getLocale())}}">@lang('messages.SiteFunPermission')</a>
 									@endif
 								</div>
-							</li>
-						
+							</li>						
 					   </ul>	
 					@endif 
 					@if(Auth::user()->get_permission_for_this_page_link('tickets.create') || Auth::user()->get_permission_for_this_page_link('tickets.index') || Auth::user()->get_permission_for_this_page_link('tickets.edit') || Auth::user()->get_permission_for_this_page_link('tickets.destroy')  || Auth::user()->super_admin == 1 || Auth::user()->is_owner() == 1)  						
@@ -124,7 +113,7 @@
 								<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 									@if(Auth::user()->get_permission_for_this_page_link('tickets.create') || Auth::user()->super_admin == 1 )
 										<a class="dropdown-item" href="{{route('tickets.create',app()->getLocale())}}">@lang('messages.CreateTickets')</a>	
-										<a class="dropdown-item" href="{{route('tickets.mytickets' ,[app()->getLocale(),Auth::user()->id])}}">@lang('messages.MyTickets')</a>
+										<a class="dropdown-item" href="{{route('tickets.mytickets' ,[ app()->getLocale(), Auth::user()->id])}}">@lang('messages.MyTickets')</a>
 									
 									@endif
 									@if(Auth::user()->get_permission_for_this_page_link('tickets.index') || Auth::user()->super_admin == 1)
@@ -135,27 +124,17 @@
 										<a class="dropdown-item" href="{{route('tickets.addticket',app()->getLocale())}}">@lang('messages.CreateTickets')</a>	
 										<a class="dropdown-item" href="{{route('tickets.ownertickets' ,[ app()->getLocale(),Auth::user()->id])}}">@lang('messages.MyTickets')</a>
 																				
-									@endif
-
-								
-									
-					
+									@endif																						
 							  </div>									
-
-							</li>
-						
+							</li>						
 						</ul>	
 					@endif
-                @endif	                
-		
+                @endif	                		
 					<select class="" style="    margin-left: auto !important;" onchange="return chk_lang()" id="lang">
 						<option value="en" @if (App::getLocale()=='en') {{'selected'}} @endif>English</option>
-						<option value="ar" @if (App::getLocale()=='ar') {{'selected'}} @endif>Arabic</option>
-						
+						<option value="ar" @if (App::getLocale()=='ar') {{'selected'}} @endif>Arabic</option>						
 					</select>			
-                  <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
-                        <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login',app()->getLocale()) }}">{{ __('messages.Login') }}</a>
@@ -183,6 +162,18 @@
                                     </form>
                                 </div>
                             </li>
+							<li>
+								@if(Auth::user())
+									@if(Auth::user()->is_owner())
+										<a style="color:red;" class="nav-link" href="#"> OWNER</a>										
+									@elseif(Auth::user()->super_admin == 1)
+										<a style="color:red;"  class="nav-link" href="#"> SUPER ADMIN </a>										
+										
+									@else
+										<a style="color:red;"  class="nav-link" href="#"> ADMIN </a>										
+									@endif						
+								@endif				
+							</li>
                         @endguest
                     </ul>
                 </div>
@@ -193,22 +184,18 @@
             @yield('content')
         </main>
     </div>
-
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-datepicker.css')}}" />
 	<script src="{{ asset('js/bootstrap-datepicker.js') }}" ></script>
 	<script>
-		// initialize input widgets first
-
-
 		$('.date , .date2').datepicker({
 			'format': 'yyyy-mm-dd',
 			'autoclose': true
 		});
 
 	</script>
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery.dataTables.css')}}">
   
-	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" charset="utf8" src="{{ asset('js/jquery.dataTables.js')}}"></script>
 	<script>
 		$(document).ready( function () {
 			var lang = document.getElementById('lang').value.trim();	
@@ -245,28 +232,28 @@
 	<script>
 		function chk_lang(){
 		    var lang = document.getElementById('lang').value.trim();
-				$.ajax({
-                    url: "/changelangouage",
-					type: "get", // call the function in index controler 
-					data: {
-						lang:lang,
-					},
-					success: function(result)
-					{
-						var arr = [ "ar", "en" ];
-						var href = window.location.href;
+			$.ajax({
+				url: "/changelangouage",
+				type: "get", // call the function in index controler 
+				data: {
+					lang:lang,
+				},
+				success: function(result)
+				{
+					var arr = [ "ar", "en" ];
+					var href = window.location.href;
 
-						if(href.search("/ar/") > -1 ){
-							var res = href.replace("/ar/", '/'+lang+'/');
-						}
-						else if(href.search("/en/") > -1){
-							var res = href.replace("/en/", '/'+lang+'/');
-							
-						}
-						window.location.href=res;
-						return true;
+					if(href.search("/ar/") > -1 ){
+						var res = href.replace("/ar/", '/'+lang+'/');
 					}
-				   });			
+					else if(href.search("/en/") > -1){
+						var res = href.replace("/en/", '/'+lang+'/');
+						
+					}
+					window.location.href=res;
+					return true;
+				}
+			});			
 			
 		}
 	</script>

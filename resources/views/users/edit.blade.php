@@ -63,7 +63,7 @@
                         </div>
 						
 						<div class="form-group row">
-							<label for="role" class="col-md-4 col-form-label text-md-right">@lang('messages.Role') </label>
+							<label for="role" class="col-md-4 col-form-label text-md-right">@lang('messages.Roles') </label>
 
 							<div class="form-check">
 								@if ($roles->count()>0)
@@ -84,7 +84,7 @@
 
 
 						<div class="form-group row">
-							<label for="permission" class="col-md-4 col-form-label text-md-right">@lang('messages.Permission') </label>
+							<label for="permission" class="col-md-4 col-form-label text-md-right">@lang('messages.Permissions') </label>
 
 							<div class="form-check">
 								@if ($permisions->count()>0)

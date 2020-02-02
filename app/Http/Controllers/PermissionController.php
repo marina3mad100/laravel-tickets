@@ -15,7 +15,6 @@ class PermissionController extends Controller
      */
     public function index()
     {
-		// dd(Permission::with('roles')->get());
         return view('permissions.index')->with('permissions',Permission::with('roles')->get());
 
     }
@@ -40,16 +39,13 @@ class PermissionController extends Controller
     {
         $this->validate($request,[
 			'permission' => 'required|unique:permissions,name',
-			//'role' => 'required'
 		]);
-		
 		$roles = $request->role ;
         $permission = Permission::create(['name' => preg_replace('/[^A-Za-z0-9\-]/', ' ', $request->permission)]);
 		if(isset($roles) && !empty($roles)){
 			$permission->syncRoles($roles);		
 		}
 		Session::flash('success', 'New Permission has been created');
-        //return redirect()->back()->withInput();
 		return redirect()->route('permissions.index',$locale);
 
     }
@@ -88,39 +84,35 @@ class PermissionController extends Controller
     {
 		
         $permission = Permission::find($id);
-		// dd($permission->roles);
-
         $this->validate($request,[
 			'permission' => 'required|unique:permissions,name,'.$id,
 		]);
 		$permission->name = preg_replace('/[^A-Za-z0-9\-]/', ' ', $request->permission);
 		$permission->save();
 		
-		$perm_roles = array();
-		if($permission->roles->count() > 0){
-			foreach($permission->roles as $role){
-					$perm_roles[]=$role->id;
-				
-				
-			}
-		}
+		$permission->syncRoles($request->role);		
 		
-		$new_roles = array();
-		if(!empty($request->role)){
-			foreach($request->role as $role){
+		// $perm_roles = array();
+		// if($permission->roles->count() > 0){
+			// foreach($permission->roles as $role){
+					// $perm_roles[]=$role->id;								
+			// }
+		// }
+		//////////////in update , get new roles that no added before and added new roles////////////////
+		// $new_roles = array();
+		// if(!empty($request->role)){
+			// foreach($request->role as $role){
 				
-				if(!in_array($role,$perm_roles)){
-					$new_roles[]=$role;
-				}
+				// if(!in_array($role,$perm_roles)){
+					// $new_roles[]=$role;
+				// }
 				
-			}
+			// }
 			
-		}
-
-		if(!empty($new_roles)){
-			$permission->assignRole($new_roles);
-		}
-		
+		// }
+		// if(!empty($new_roles)){
+			// $permission->assignRole($new_roles);
+		// }		
 		Session::flash('success', 'Permission Has Been Updated');
 
         return redirect()->back()->withInput();	

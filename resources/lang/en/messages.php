@@ -87,5 +87,20 @@ return [
 	'Ticket Has Been Deleted'=>'Ticket Has Been Deleted',
 	'Ticket Has Been Closed'=>'Ticket Has Been Closed',
 	'Ticket Has Been Reopened'=>'Ticket Has Been Reopened',	
-	'searchResult'=>'Search Result'
+	'searchResult'=>'Search Result',
+	'NoPermissionPleaseAdd'=>'No Permission Exist Please Add Permissions',
+	'Dashboard'=>'Dashboard',
+	'You are logged in as'=>'You are logged in as '	,
+	'Show all Admins'=>'Can show All Admin in table in addition to can Edit and Delete Admin',
+	'Create Admin Page'=>'Can Add New Admin',
+	'Edit Admin Page'=>'Can Edit in admin Data and you must to add the same Permission to (Show All Admin) Action to can edit All Admins ',
+	'Delete Admin'=>'Can Delete Admin and You must to add the same Permission to (Show All Admin) Action to can Delete All Admins',	
+	'Show all Tickets'=>'Can show All Ticket in table in addition to can Edit , Delete , Close , Open , Reopen Ticket',
+	'Create Ticket Page'=>'Can Add New Ticket',
+	'Edit Ticket Page'=>'Can Edit Tickets Data that related to Auth User in Dashboard or you must to add The same Permission to (Show All Ticket) Action To Edit in All Tickets ',
+	'Delete Ticket'=>'Can Delete Tickest that related to Auth User in Dashboard or you must to add The same Permission to (Show All Ticket) Action To Delete in All Tickets',
+	'Close Ticket'=>'Can Close Tickets that related to Auth User in Dashboard or you must to add The same Permission to (Show All Ticket) Action To Close in All Tickets',
+	'Open Ticket'=>'Can Open Tickets that related to Auth User in Dashboard or you must to add The same Permission to (Show All Ticket) Action To Open in All Tickets',
+	'Reopen Ticket'=>'Can ReOpen Tickets that related to Auth User in Dashboard or you must to add The same Permission to (Show All Ticket) Action To ReOpen in All Tickets',	
+	'ReOpen Ticket No'=>'ReOpen Ticket No'
 ];

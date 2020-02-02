@@ -18,6 +18,10 @@ class CreateControllerNamesTable extends Migration
 			$table->string('name')->unique();
             $table->timestamps();
         });
+        DB::table('controller_names')->insert([
+            ['name' => 'UsersController'],
+			['name' => 'TicketController']
+        ]);						
     }
 
     /**
